@@ -1,4 +1,4 @@
-from src.out_writer import *
+from src.out_writer import OutputWriterP2
 
 class PartTwo:
     def insert(self, idx, char):
@@ -114,4 +114,3 @@ class PartTwo:
             else:
                 if curr_num_operations != next_num_operations:
                     res.append(writer.insert(word2[i], i))
-            
