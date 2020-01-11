@@ -66,8 +66,8 @@ class PartTwo:
         
         The solution is an adaptation of the Levenshtein distance algorithm (matrixCompute()).
         """
-        write = OutputWriterP2()
-        
+        writer = OutputWriterP2()
+
         path = []
         res = []
         n, m = len(word1), len(word2)
@@ -97,16 +97,21 @@ class PartTwo:
         # Compute comands
         for idx in range(len(path)-1):
             i, j = path[idx]
+            curr_num_operations = memo[i][j]
+
             delete = (i+1, j)
             replace = (i+1, j+1)
-            insert = (i, j+1)
 
             next_coord = path[idx+1]
-            if next_coord == replace:
-                res.append(eplace(i, word2[i])
-            elif next_coord == delete:
-                res.append(self.delete(i))
-            else:
-                res.append(self.insert())
+            next_num_operations = memo[next_coord[0]][next_coord[1]]
 
+            if next_coord == replace:
+                if curr_num_operations != next_num_operations:
+                    res.append(writer.replace(word2[i], i))          
+            elif next_coord == delete:
+                if curr_num_operations != next_num_operations:
+                    res.append(writer.delete(i))
+            else:
+                if curr_num_operations != next_num_operations:
+                    res.append(writer.insert(word2[i], i))
             
