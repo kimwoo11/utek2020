@@ -1,4 +1,6 @@
-from src.out_writer import *
+import argparse
+from src.parse_input import parse_p2
+from src.out_writer import OutputWriterP2
 
 class PartTwo:
     def insert(self, idx, char):
@@ -69,14 +71,14 @@ class PartTwo:
         writer = OutputWriterP2()
 
         path = []
-        res = []
         n, m = len(word1), len(word2)
         memo, zero_len = self.matrixCompute(word1, word2)
         
         i, j = n, m 
         
         # Backtrack to find optimal path
-        while i >= 0 and j >= 0:
+        path.insert(0, (n, m))
+        while i > 0 and j > 0:
             left = memo[i][j-1] if j-1 >= 0 else float('inf')
             down = memo[i-1][j] if i-1 >= 0 else float('inf')
             diag = memo[i-1][j-1] if i-1 >= 0 and j-1 >= 0 else float('inf')
@@ -107,17 +109,23 @@ class PartTwo:
 
             if next_coord == replace:
                 if curr_num_operations != next_num_operations:
-                    res.append(writer.replace(word2[i], i))          
+                    writer.replace(word2[i], i)
             elif next_coord == delete:
                 if curr_num_operations != next_num_operations:
-                    res.append(writer.delete(i))
+                    writer.delete(i)
             else:
                 if curr_num_operations != next_num_operations:
-                    res.append(writer.insert(word2[i], i))
+                    writer.insert(word2[i], i)
             
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Librarians Dilemma')
     parser.add_argument('--input_path', required=True, help='Pass input file path to --input_path')
     args = parser.parse_args()    
-    main(args)
+    
+    # original, desired = parse_p2(args)
+    original = 'horse'
+    desired = 'ros'
+    p2 = PartTwo()
+    memo, _ = p2.matrixCompute(word1=original, word2=desired)
+    res = p2.partTwo(word1=original, word2=desired)

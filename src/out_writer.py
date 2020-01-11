@@ -18,17 +18,17 @@ class OutputWriterP3:
         out_string = "Insert {}-{},".format(idx[0], idx[1])
         for book in books:
             out_string += " \"{}\"".format(book)
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def replace(self, books, idx):
         out_string = "Replace {}-{},".format(idx[0], idx[1])
         for book in books:
             out_string += " \"{}\"".format(book)
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def delete(self, idx):
         out_string = 'Delete {}-{}'.format(idx[0], idx[1])
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def close(self):
         self.writer.close()
@@ -45,15 +45,15 @@ class OutputWriterP2:
 
     def insert(self, char, idx):
         out_string = "Insert {}, '{}'".format(idx, char)
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def replace(self, char, idx):
         out_string = "Replace {}, '{}'".format(idx, char)
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def delete(self, idx):
         out_string = 'Delete {}'.format(idx)
-        self.writer.write(out_string)
+        self.writer.write(out_string + '\n')
 
     def close(self):
         self.writer.close()

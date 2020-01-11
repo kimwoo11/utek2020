@@ -26,5 +26,4 @@ def parse_p2(args):
     original = content[0]
     desired = content[1]
 
-    print(original, desired)
     return original, desired
