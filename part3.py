@@ -33,7 +33,7 @@ def count_swiches(ops):
             # NOTE: 'IIINDDDD' is one switch (from inserts to deletes) and not
             # two switches (from inserts to nothing to deletes)
             curr = nxt
-            
+
             if nxt != 'N':
                 # If not 'N', we need to take this into account
                 count += 1
