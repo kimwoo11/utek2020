@@ -84,56 +84,65 @@ class PartTwo:
                 for i in range(n):
                     writer.delete(0)
 
-        # Backtrack to find optimal path
-        path.insert(0, (n, m))
-        while i > 0 and j > 0:
-            left = memo[i][j-1] if j-1 >= 0 else float('inf')
-            down = memo[i-1][j] if i-1 >= 0 else float('inf')
-            diag = memo[i-1][j-1] if i-1 >= 0 and j-1 >= 0 else float('inf')
+        else:
+            # Backtrack to find optimal path
+            path.insert(0, (n, m))
+            while i > 0 and j > 0:
+                left = memo[i][j-1] if j-1 >= 0 else float('inf')
+                down = memo[i-1][j] if i-1 >= 0 else float('inf')
+                diag = memo[i-1][j-1] if i-1 >= 0 and j-1 >= 0 else float('inf')
+                
+                opt = min(left, down, diag)
+                
+                if opt == diag:
+                    path.insert(0, (i-1,j-1))
+                    j -= 1
+                    i -= 1
+                elif opt == down:
+                    path.insert(0, (i-1, j))
+                    i -= 1
+                else:
+                    path.insert(0, (i,j-1))
+                    j -= 1 
             
-            opt = min(left, down, diag)
+            # Compute comands
+            for idx in range(len(path)-1):
+                i, j = path[idx]
+                curr_num_operations = memo[i][j]
+
+                delete = (i+1, j)
+                replace = (i+1, j+1)
+
+                next_coord = path[idx+1]
+                next_num_operations = memo[next_coord[0]][next_coord[1]]
+
+                if next_coord == replace:
+                    if curr_num_operations != next_num_operations:
+                        writer.replace(word2[i], i)
+                elif next_coord == delete:
+                    if curr_num_operations != next_num_operations:
+                        writer.delete(i)
+                else:
+                    if curr_num_operations != next_num_operations:
+                        writer.insert(word2[i], i)
             
-            if opt == diag:
-                path.insert(0, (i-1,j-1))
-                j -= 1
-                i -= 1
-            elif opt == down:
-                path.insert(0, (i-1, j))
-                i -= 1
-            else:
-                path.insert(0, (i,j-1))
-                j -= 1 
-        
-        # Compute comands
-        for idx in range(len(path)-1):
-            i, j = path[idx]
-            curr_num_operations = memo[i][j]
+            print(path)
+            for i in range(len(memo)):
+                print(memo[i])
 
-            delete = (i+1, j)
-            replace = (i+1, j+1)
-
-            next_coord = path[idx+1]
-            next_num_operations = memo[next_coord[0]][next_coord[1]]
-
-            if next_coord == replace:
-                if curr_num_operations != next_num_operations:
-                    writer.replace(word2[i], i)
-            elif next_coord == delete:
-                if curr_num_operations != next_num_operations:
-                    writer.delete(i)
-            else:
-                if curr_num_operations != next_num_operations:
-                    writer.insert(word2[i], i)
+            for i in range(len(memo)):
+                y, x = path[i]
+                print(memo[y][x])
             
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Librarians Dilemma')
     parser.add_argument('--input_path', required=True, help='Pass input file path to --input_path')
     args = parser.parse_args()    
-    
-    # original, desired = parse_p2(args)
-    original = 'horse'
-    desired = 'ros'
+
+    # Compute moves for given strings
+    original, desired = parse_p2(args)
+    print('Original: {}'.format(original))
+    print('Desired: {}'.format(desired))
     p2 = PartTwo()
-    memo, _ = p2.matrixCompute(word1=original, word2=desired)
     p2.partTwo(word1=original, word2=desired)
