@@ -35,7 +35,6 @@ class OutputWriterP3:
 
 
 class OutputWriterP2:
-    
     def __init__(self, file_path='./results', file_name='p2_moves'):
         if not os.path.exists(file_path):
             os.mkdir(file_path)
