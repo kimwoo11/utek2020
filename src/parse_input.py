@@ -1,4 +1,4 @@
-def parse(args):
+def parse_p3(args):
     filename = args.input_path
 
     with open(filename) as file_in:
@@ -12,4 +12,19 @@ def parse(args):
     original = content[1:blank_index]
     desired = content[blank_index+2:]
 
+    return original, desired
+
+
+def parse_p2(args):
+
+    filename = args.input_path
+    
+    with open(filename) as file_in:
+        content = file_in.readlines()
+    content = [x.strip() for x in content]
+
+    original = content[0]
+    desired = content[1]
+
+    print(original, desired)
     return original, desired

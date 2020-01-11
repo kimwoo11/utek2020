@@ -115,3 +115,9 @@ class PartTwo:
                 if curr_num_operations != next_num_operations:
                     res.append(writer.insert(word2[i], i))
             
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='Librarians Dilemma')
+    parser.add_argument('--input_path', required=True, help='Pass input file path to --input_path')
+    args = parser.parse_args()    
+    main(args)
