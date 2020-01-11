@@ -1,0 +1,16 @@
+Replace 0, 'g'
+Insert 4, 'i'
+Insert 4, 'i'
+Insert 4, 'i'
+Replace 4, 'i'
+Insert 5, 'b'
+Replace 5, 'b'
+Replace 6, 'o'
+Replace 9, 'o'
+Replace 15, 'n'
+Replace 17, 'h'
+Replace 19, 't'
+Delete 21
+Delete 22
+Delete 23
+Replace 24, 'i'
