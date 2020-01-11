@@ -26,7 +26,7 @@ class PartTwo:
         
         n = len(word1)
         m = len(word2)
-        
+
         # Array to cache the convertion history (memoization)
         memo = [[0] * (m + 1) for _ in range(n + 1)]
         
@@ -76,6 +76,14 @@ class PartTwo:
         
         i, j = n, m 
         
+        if zero_len:
+            if n == 0:
+                for i in range(m):
+                    writer.insert(word2[i], i)
+            else:
+                for i in range(n):
+                    writer.delete(0)
+
         # Backtrack to find optimal path
         path.insert(0, (n, m))
         while i > 0 and j > 0:
@@ -128,4 +136,4 @@ if __name__ == '__main__':
     desired = 'ros'
     p2 = PartTwo()
     memo, _ = p2.matrixCompute(word1=original, word2=desired)
-    res = p2.partTwo(word1=original, word2=desired)
+    p2.partTwo(word1=original, word2=desired)
