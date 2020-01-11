@@ -3,6 +3,7 @@ import csv
 
 osj = os.path.join
 
+
 class OutputWriterP3:
 
     def __init__(self, file_path='./results', file_name='p3_moves'):
@@ -31,6 +32,7 @@ class OutputWriterP3:
 
     def close(self):
         self.writer.close()
+
 
 class OutputWriterP2:
     

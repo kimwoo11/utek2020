@@ -2,6 +2,7 @@ import argparse
 from src.parse_input import *
 from src.out_writer import *
 
+
 def main(arguments):
     pass
 
