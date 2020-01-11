@@ -1,8 +1,6 @@
 import argparse
 from src.parse_input import parse_p2
 from src.out_writer import OutputWriterP2
-import pandas as pd 
-import numpy
 
 class PartTwo:
     def insert(self, idx, char):
@@ -30,13 +28,14 @@ class PartTwo:
         m = len(word2)
 
         # Array to cache the convertion history (memoization)
-        memo = [[0] * (m + 1) for _ in range(n + 1)]
+        # Dir = [down, left, diag]
+        memo = [(0, [False, False, False]) * (m + 1) for _ in range(n + 1)]
         
         # Base cases
         for i in range(n + 1):
-            memo[i][0] = i
+            memo[i][0] = (i, [False, False, False])
         for j in range(m + 1):
-            memo[0][j] = j
+            memo[0][j] = (j, [False, False, False])
         
         # Check if one of the words contain no characters
         if n * m == 0:
@@ -45,12 +44,20 @@ class PartTwo:
         # Memoize!
         for i in range(1, n + 1):
             for j in range(1, m + 1):
-                left = memo[i - 1][j] + 1
-                down = memo[i][j - 1] + 1
-                left_down = memo[i - 1][j - 1] 
+                left = memo[i - 1][j][0] + 1
+                down = memo[i][j - 1][0] + 1
+                left_down = memo[i - 1][j - 1][0] 
                 if word1[i - 1] != word2[j - 1]:
                     left_down += 1
-                memo[i][j] = min(left, down, left_down)
+                minimum = min(left, down, left_down)
+                temp = [False, False, False]
+                if left == minimum:
+                    temp[1] = True
+                if down == minimum:
+                    temp[0] = True
+                if left_down == minimum:
+                    temp[2] = True
+                memo[i][j] = (minimum, temp)
 
         return memo, False
     
@@ -88,22 +95,26 @@ class PartTwo:
 
         else:
             # Backtrack to find optimal path
+
             path.insert(0, (n, m))
             while i > 0 and j > 0:
-                left = memo[i][j-1] if j-1 >= 0 else float('inf')
-                down = memo[i-1][j] if i-1 >= 0 else float('inf')
-                diag = memo[i-1][j-1] if i-1 >= 0 and j-1 >= 0 else float('inf')
                 
+                left = memo[i][j-1][0] if j-1 >= 0 else float('inf')
+                down = memo[i-1][j][0] if i-1 >= 0 else float('inf')
+                diag = memo[i-1][j-1][0] if i-1 >= 0 and j-1 >= 0 else float('inf')
+                
+                valid_down, valid_left, valid_diag = memo[i][j][1]
+    
                 opt = min(left, down, diag)
                 
-                if opt == diag:
+                if opt == diag and valid_diag:
                     path.insert(0, (i-1,j-1))
                     j -= 1
                     i -= 1
-                elif opt == down:
+                elif opt == down and valid_down:
                     path.insert(0, (i-1, j))
                     i -= 1
-                else:
+                elif opt == left and valid_left:
                     path.insert(0, (i,j-1))
                     j -= 1 
             
@@ -128,16 +139,16 @@ class PartTwo:
                     if curr_num_operations != next_num_operations:
                         writer.insert(word2[i], i)
             
-            print(path)
-            for i in range(len(memo)):
-                print(memo[i])
+            # print(path)
+            # for i in range(len(memo)):
+            #     print(memo[i])
 
-            for i in range(len(memo)):
-                y, x = path[i]
-                print(memo[y][x])
+            # for i in range(len(memo)):
+            #     y, x = path[i]
+            #     print(memo[y][x])
                 
-            a = numpy.asarray(memo)
-            pd.DataFrame(a).to_csv(".")
+            # a = numpy.asarray(memo)
+            # pd.DataFrame(a).to_csv(".")
             
             
 if __name__ == '__main__':
