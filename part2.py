@@ -126,13 +126,19 @@ class PartTwo:
                     if curr_num_operations != next_num_operations:
                         writer.insert(word2[i], i)
             
-            print(path)
+            print('matrix')
             for i in range(len(memo)):
                 print(memo[i])
 
-            for i in range(len(memo)):
-                y, x = path[i]
-                print(memo[y][x])
+            path_vals = [memo[y][x] for y, x in path]
+            print('path')
+            print(path)
+            print('path_vals')
+            print(path_vals)
+
+            print('Path and vals')
+            p = [(path[i], path_vals[i]) for i in range(len(path))]
+            print(p)
             
 if __name__ == '__main__':
 
