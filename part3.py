@@ -7,10 +7,11 @@ def main(arguments):
 
 
 def get_solutions(m, solutions, row, col, current_solution_index):
+    print("My position: " + str(row) + ", " + str(col))
     if row == len(m)-1 and col == 0:
         return
 
-    curr_val = m[row][col]
+    curr_val = m[row][col][0]
     curr_solution = copy.deepcopy(solutions[current_solution_index])
     optimal_val = float('inf')
     
@@ -18,40 +19,40 @@ def get_solutions(m, solutions, row, col, current_solution_index):
     down_val = float('inf')
     diag_val = float('inf')
 
-    if col > 0:
-        left_val = m[row][col-1]
-    if row < len(m) - 1:
-        down_val = m[row+1][col]
-    if col > 0 and row < len(m) - 1:
-        diag_val = m[row+1][col-1]
+    if col > 0 and m[row][col-1][1][1]:
+        left_val = m[row][col-1][0]
+    if row < len(m) - 1 and m[row+1][col][1][0]:
+        down_val = m[row+1][col][0]
+    if col > 0 and row < len(m) - 1 and m[row+1][col-1][1][2]:
+        diag_val = m[row+1][col-1][0]
 
     optimal_val = min(left_val, down_val, diag_val)
     num_optimal_solutions = 0
 
     if left_val == optimal_val:
-        solutions[current_solution_index].insert(0, 'I') if left_val != curr_val else new_sol.insert(0, 'N')
+        solutions[current_solution_index].insert(0, 'I') if left_val != curr_val else new_sol.insert(0, 'NI')
         num_optimal_solutions += 1
         get_solutions(m, solutions, row, col-1, current_solution_index)
     if down_val == optimal_val:
         new_sol = []
         if num_optimal_solutions > 0:
             new_sol = copy.deepcopy(curr_solution)
-            new_sol.insert(0, 'D') if down_val != curr_val else new_sol.insert(0, 'N')
+            new_sol.insert(0, 'D') if down_val != curr_val else new_sol.insert(0, 'ND')
             solutions.append(new_sol)
             get_solutions(m, solutions, row+1, col, len(solutions)-1)
         else:
-            solutions[current_solution_index].insert(0, 'D') if down_val != curr_val else new_sol.insert(0, 'N')
+            solutions[current_solution_index].insert(0, 'D') if down_val != curr_val else solutions[current_solution_index].insert(0, 'ND')
             get_solutions(m, solutions, row+1, col, current_solution_index)
         num_optimal_solutions += 1
     if diag_val == optimal_val:
         new_sol = []
         if num_optimal_solutions > 0:
             new_sol = copy.deepcopy(curr_solution)
-            new_sol.insert(0, 'R') if diag_val != curr_val else new_sol.insert(0, 'N')
+            new_sol.insert(0, 'R') if diag_val != curr_val else new_sol.insert(0, 'NR')
             solutions.append(new_sol)
             get_solutions(m, solutions, row+1, col-1, len(solutions)-1)
         else:
-            solutions[current_solution_index].insert(0, 'R') if diag_val != curr_val else new_sol.insert(0, 'N')
+            solutions[current_solution_index].insert(0, 'R') if diag_val != curr_val else solutions[current_solution_index].insert(0, 'NR')
             get_solutions(m, solutions, row+1, col-1, current_solution_index)
         num_optimal_solutions += 1
 
