@@ -5,12 +5,16 @@ osj = os.path.join
 
 class OutputWriterP3:
 
-    def __init__(self, file_path='.', file_name='p3_moves.out.txt'):
-        self.path = os.path.join(file_path, file_name)
+    def __init__(self, file_path='./results', file_name='p3_moves'):
+        if not os.path.exists(file_path):
+            os.mkdir(file_path)
+
+        name = file_name + '.out'
+        self.path = os.path.join(file_path, name)
         self.writer = open(self.path, 'w+')
 
     def insert(self, books, idx):
-        out_string = 'Insert {}-{},".format(idx[0], idx[1])
+        out_string = "Insert {}-{},".format(idx[0], idx[1])
         for book in books:
             out_string += " \"{}\"".format(book)
         self.writer.write(out_string)
@@ -30,8 +34,12 @@ class OutputWriterP3:
 
 class OutputWriterP2:
     
-    def __init__(self, file_path='.', file_name='p2_moves.out.txt'):
-        self.path = os.path.join(file_path, file_name)
+    def __init__(self, file_path='./results', file_name='p2_moves'):
+        if not os.path.exists(file_path):
+            os.mkdir(file_path)
+        
+        name = file_name + '.out'
+        self.path = os.path.join(file_path, name)
         self.writer = open(self.path, 'w+')
 
     def insert(self, char, idx):
