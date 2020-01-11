@@ -6,6 +6,40 @@ def main(arguments):
     pass
 
 
+def count_swiches(ops):
+
+    # This function takes in a list of operations, and returns the number of operation switches and deletions
+
+    curr = ops[0]
+    count = 0
+    del_count = 0
+
+    for idx in range(len(ops)):
+        # Iterate through every operation in the list
+
+        nxt = curr[idx]
+        # Get the next operation
+
+        if nxt == 'D':
+            del_count += 1
+
+        if nxt == curr:
+            # If the next operation is the same as the current one, no switches
+            # Therefore don't do anything
+            pass
+
+        else:
+            # Otherwise, there was a switch, which must be taken into account
+            # NOTE: 'IIINDDDD' is one switch (from inserts to deletes) and not
+            # two switches (from inserts to nothing to deletes)
+            curr = nxt
+
+            if nxt != 'N':
+                # If not 'N', we need to take this into account
+                count += 1
+
+    return count, del_count
+
 def get_solutions(m, solutions, row, col, current_solution_index):
     print("My position: " + str(row) + ", " + str(col))
     if row == len(m)-1 and col == 0:

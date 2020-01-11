@@ -28,13 +28,14 @@ class PartTwo:
         m = len(word2)
 
         # Array to cache the convertion history (memoization)
-        memo = [[0] * (m + 1) for _ in range(n + 1)]
+        # Dir = [down, left, diag]
+        memo = [(0, [False, False, False]) * (m + 1) for _ in range(n + 1)]
         
         # Base cases
         for i in range(n + 1):
-            memo[i][0] = i
+            memo[i][0] = (i, [False, False, False])
         for j in range(m + 1):
-            memo[0][j] = j
+            memo[0][j] = (j, [False, False, False])
         
         # Check if one of the words contain no characters
         if n * m == 0:
@@ -43,12 +44,20 @@ class PartTwo:
         # Memoize!
         for i in range(1, n + 1):
             for j in range(1, m + 1):
-                left = memo[i - 1][j] + 1
-                down = memo[i][j - 1] + 1
-                left_down = memo[i - 1][j - 1] 
+                left = memo[i - 1][j][0] + 1
+                down = memo[i][j - 1][0] + 1
+                left_down = memo[i - 1][j - 1][0] 
                 if word1[i - 1] != word2[j - 1]:
                     left_down += 1
-                memo[i][j] = min(left, down, left_down)
+                minimum = min(left, down, left_down)
+                temp = [False, False, False]
+                if left == minimum:
+                    temp[1] = True
+                if down == minimum:
+                    temp[0] = True
+                if left_down == minimum:
+                    temp[2] = True
+                memo[i][j] = (minimum, temp)
 
         return memo, False
     
@@ -84,56 +93,73 @@ class PartTwo:
                 for i in range(n):
                     writer.delete(0)
 
-        # Backtrack to find optimal path
-        path.insert(0, (n, m))
-        while i > 0 and j > 0:
-            left = memo[i][j-1] if j-1 >= 0 else float('inf')
-            down = memo[i-1][j] if i-1 >= 0 else float('inf')
-            diag = memo[i-1][j-1] if i-1 >= 0 and j-1 >= 0 else float('inf')
+        else:
+            # Backtrack to find optimal path
+
+            path.insert(0, (n, m))
+            while i > 0 and j > 0:
+                
+                left = memo[i][j-1][0] if j-1 >= 0 else float('inf')
+                down = memo[i-1][j][0] if i-1 >= 0 else float('inf')
+                diag = memo[i-1][j-1][0] if i-1 >= 0 and j-1 >= 0 else float('inf')
+                
+                valid_down, valid_left, valid_diag = memo[i][j][1]
+    
+                opt = min(left, down, diag)
+                
+                if opt == diag and valid_diag:
+                    path.insert(0, (i-1,j-1))
+                    j -= 1
+                    i -= 1
+                elif opt == down and valid_down:
+                    path.insert(0, (i-1, j))
+                    i -= 1
+                elif opt == left and valid_left:
+                    path.insert(0, (i,j-1))
+                    j -= 1 
             
-            opt = min(left, down, diag)
+            # Compute comands
+            for idx in range(len(path)-1):
+                i, j = path[idx]
+                curr_num_operations = memo[i][j]
+
+                delete = (i+1, j)
+                replace = (i+1, j+1)
+
+                next_coord = path[idx+1]
+                next_num_operations = memo[next_coord[0]][next_coord[1]]
+
+                if next_coord == replace:
+                    if curr_num_operations != next_num_operations:
+                        writer.replace(word2[i], i)
+                elif next_coord == delete:
+                    if curr_num_operations != next_num_operations:
+                        writer.delete(i)
+                else:
+                    if curr_num_operations != next_num_operations:
+                        writer.insert(word2[i], i)
             
-            if opt == diag:
-                path.insert(0, (i-1,j-1))
-                j -= 1
-                i -= 1
-            elif opt == down:
-                path.insert(0, (i-1, j))
-                i -= 1
-            else:
-                path.insert(0, (i,j-1))
-                j -= 1 
-        
-        # Compute comands
-        for idx in range(len(path)-1):
-            i, j = path[idx]
-            curr_num_operations = memo[i][j]
+            # print(path)
+            # for i in range(len(memo)):
+            #     print(memo[i])
 
-            delete = (i+1, j)
-            replace = (i+1, j+1)
-
-            next_coord = path[idx+1]
-            next_num_operations = memo[next_coord[0]][next_coord[1]]
-
-            if next_coord == replace:
-                if curr_num_operations != next_num_operations:
-                    writer.replace(word2[i], i)
-            elif next_coord == delete:
-                if curr_num_operations != next_num_operations:
-                    writer.delete(i)
-            else:
-                if curr_num_operations != next_num_operations:
-                    writer.insert(word2[i], i)
+            # for i in range(len(memo)):
+            #     y, x = path[i]
+            #     print(memo[y][x])
+                
+            # a = numpy.asarray(memo)
+            # pd.DataFrame(a).to_csv(".")
+            
             
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Librarians Dilemma')
     parser.add_argument('--input_path', required=True, help='Pass input file path to --input_path')
     args = parser.parse_args()    
-    
-    # original, desired = parse_p2(args)
-    original = 'horse'
-    desired = 'ros'
+
+    # Compute moves for given strings
+    original, desired = parse_p2(args)
+    print('Original: {}'.format(original))
+    print('Desired: {}'.format(desired))
     p2 = PartTwo()
-    memo, _ = p2.matrixCompute(word1=original, word2=desired)
     p2.partTwo(word1=original, word2=desired)
