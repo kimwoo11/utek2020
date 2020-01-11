@@ -1,6 +1,8 @@
 import argparse
 from src.parse_input import parse_p2
 from src.out_writer import OutputWriterP2
+import pandas as pd 
+import numpy
 
 class PartTwo:
     def insert(self, idx, char):
@@ -133,6 +135,10 @@ class PartTwo:
             for i in range(len(memo)):
                 y, x = path[i]
                 print(memo[y][x])
+                
+            a = numpy.asarray(memo)
+            pd.DataFrame(a).to_csv(".")
+            
             
 if __name__ == '__main__':
 
