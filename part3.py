@@ -1,4 +1,5 @@
 import argparse
+from src.parse_input import *
 
 def main(arguments):
     pass
@@ -7,6 +8,6 @@ def main(arguments):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Librarians Dilemma')
-    parser.add_argument('--input_path', required=True, help='path to input file with extension .in')
+    parser.add_argument('--input_path', required=True, help='Pass input file path to --input_path')
     args = parser.parse_args()
-    main(args)
+    original, desired = parse(args)
